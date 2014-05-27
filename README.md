@@ -31,57 +31,27 @@ You will need to install the swagger client; which contains the html pages that 
 
 ### add swagger to your express application
 
-1. `title` is the name given to th swagger web site
-2. `statics` is the location of the swagger-ui client files
-3. `resources` is the location of your generated swagger resource files
-4. `applicationUrl` is the url of your application, this is inserted into the swagger client (see below)
-5. `routes` contains an array of routes (see below)
+1. `statics` is the location of the swagger-ui client files
+2. `resources` is the location of your generated swagger resource files
+3. `applicationUrl` is the url of your application APIs
+4. `routes` contains an array of routes (see below)
  
 #####swagger will be hosted here: http://127.0.0.1:3000/swagger
 
 ```
 var swagger = require('express-validation-swagger');
 
-swagger(app, {
-  title : 'express validation swagger', 
-  statics : '/test/public/swagger/',  
-  resources : '/test/swagger/', 
-  applicationUrl : 'http://127.0.0.1:3000',
+app.use('/swagger/',swagger({
+  statics : '/test/public/swagger/',
+  resources : '/test/swagger/',
+  applicationUrl : '/',
   routes : [
-    { page : 'user', method : 'GET',    path: '/user', validation : validation.user.get },
-    { page : 'user', method : 'POST',   path: '/user', validation : validation.user.post },
-    { page : 'user', method : 'DELETE', path: '/user', validation : validation.user.del },
-    { page : 'user', method : 'PUT',    path: '/user', validation : validation.user.put }
+    { page : 'user', method : 'GET',    path: '/user',         validation : validation.user.get },
+    { page : 'user', method : 'POST',   path: '/user',         validation : validation.user.post },
+    { page : 'user', method : 'DELETE', path: '/user',         validation : validation.user.del },
+    { page : 'user', method : 'PUT',    path: '/user',         validation : validation.user.put }
   ]
-});
-```
-
-
-### swagger-ui template changes
-
-In order to specify where to host swagger amend the swagger index.html file, the `url` element should equal `{{applicationUrl}}`.
-
-```
-$(function () {
-  window.swaggerUi = new SwaggerUi({
-  url: "{{applicationUrl}}",
-  dom_id: "swagger-ui-container",
-  supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
-  onComplete: function(swaggerApi, swaggerUi){
-    if(console) {
-      console.log("Loaded SwaggerUI")
-    }
-    $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
-  },
-  onFailure: function(data) {
-    if(console) {
-      console.log("Unable to Load SwaggerUI");
-      console.log(data);
-    }
-  },
-  docExpansion: "none"
-});
-
+}));
 ```
 
 
@@ -119,21 +89,18 @@ npm install
 node test/app.js
 ```
 
+Navigate to `http://127.0.0.1:3000/swagger`
+
 
 ```
 var express = require('express')
-  , cons = require('consolidate')
   , http = require('http')
   , swagger = require('../lib/swagger/main')
   , validate = require('express-validation')
   , Joi = require('joi')
   , app = express();
 
-app.engine('html', cons.handlebars);
-app.set('view engine', 'html');
-app.set('views', 'public');
-
-var validation = { 
+var validation = {
   user : { 
     get : { 
       headers: { userid : Joi.string().required().regex(/^[0-9a-fA-F]{24}$/) }
@@ -177,23 +144,21 @@ app.post('/user', validate(validation.user.post),  services.user.post );
 app.del('/user', validate(validation.user.del),   services.user.del);
 app.put('/user', validate(validation.user.put),   services.user.put);
 
-swagger(app, {
-  title : 'express validation swagger', 
-  statics : '/test/public/swagger/',  
-  resources : '/test/swagger/', 
-  applicationUrl : 'http://127.0.0.1:3000',
+app.use('/swagger/',swagger({
+  statics : '/test/public/swagger/',
+  resources : '/test/swagger/',
+  applicationUrl : '/',
   routes : [
-    { page : 'user', method : 'GET',    path: '/user', validation : validation.user.get },
-    { page : 'user', method : 'POST',   path: '/user', validation : validation.user.post },
-    { page : 'user', method : 'DELETE', path: '/user', validation : validation.user.del },
-    { page : 'user', method : 'PUT',    path: '/user', validation : validation.user.put }
+    { page : 'user', method : 'GET',    path: '/user',         validation : validation.user.get },
+    { page : 'user', method : 'POST',   path: '/user',         validation : validation.user.post },
+    { page : 'user', method : 'DELETE', path: '/user',         validation : validation.user.del },
+    { page : 'user', method : 'PUT',    path: '/user',         validation : validation.user.put }
   ]
-});
+}));
 
 app.use(app.router);
 http.createServer(app).listen(3000);
 module.exports = app;
-
 ```
 
 

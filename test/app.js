@@ -1,16 +1,11 @@
 var express = require('express')
-  , cons = require('consolidate')
   , http = require('http')
   , swagger = require('../lib/swagger/main')
   , validate = require('express-validation')
   , Joi = require('joi')
   , app = express();
 
-app.engine('html', cons.handlebars);
-app.set('view engine', 'html');
-app.set('views', 'public');
-
-var validation = { 
+var validation = {
   user : { 
     get : { 
       headers: { userid : Joi.string().required().regex(/^[0-9a-fA-F]{24}$/) }
@@ -54,11 +49,10 @@ app.post('/user', validate(validation.user.post),  services.user.post );
 app.del('/user', validate(validation.user.del),   services.user.del);
 app.put('/user', validate(validation.user.put),   services.user.put);
 
-app.use('/',swagger({
-  title : 'express validation swagger',
+app.use('/swagger/',swagger({
   statics : '/test/public/swagger/',
   resources : '/test/swagger/',
-  applicationUrl : 'http://127.0.0.1:3000',
+  applicationUrl : '/',
   routes : [
     { page : 'user', method : 'GET',    path: '/user',         validation : validation.user.get },
     { page : 'user', method : 'POST',   path: '/user',         validation : validation.user.post },

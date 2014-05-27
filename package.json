@@ -17,14 +17,13 @@
     "underscore": "~1.6.0"
   },
   "devDependencies": {
-    "consolidate": "~0.9.1",
-    "handlebars": "~1.0.12",
     "grunt": "~0.4.1",
     "request": "~2.27.0",
     "grunt-cafe-mocha": "~0.1.9",
     "grunt-contrib-jshint": "~0.6.4",
     "joi": "~2.7.0",
     "async": "~0.2.10",
+    "swagger-ui": "https://github.com/gdw2/swagger-ui.git#bad",
     "express-validation": "~0.1.6"
   },
   "keywords": [
